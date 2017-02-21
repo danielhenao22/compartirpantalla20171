@@ -21,6 +21,7 @@ import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.modelo.Usuario;
  *
  */
 public class Controlador extends Observable implements Runnable {
+	
 
 	private Socket con;
 	private ObjectOutputStream salida;
