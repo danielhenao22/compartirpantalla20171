@@ -1,5 +1,6 @@
 package co.edu.eam.ingesoft.distribuidos.servidor.logica;
 
+import co.edu.eam.dao.UsuarioJpaController;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.LoginDTO;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.RegistroDTO;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.modelo.Usuario;
@@ -15,6 +16,9 @@ public class Logica {
 	 * @return true
 	 */
 	public boolean verificarUsuario(LoginDTO usuario) {
+		UsuarioJpaController con = new UsuarioJpaController();
+		con.findUsuario(1);
+		System.out.println("quien ");
 		return true;
 	}
 

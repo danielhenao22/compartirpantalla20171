@@ -17,7 +17,7 @@ class SingletonEntityManager {
     private static EntityManager em;
 
     private SingletonEntityManager() {
-        em = Persistence.createEntityManagerFactory("servidorTCPPU").createEntityManager();
+        em = Persistence.createEntityManagerFactory("compartirpantalla").createEntityManager();
     }
 
     public static EntityManager getInstance() {

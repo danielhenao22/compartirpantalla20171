@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import co.edu.eam.dao.UsuarioJpaController;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.modelo.Usuario;
 import co.edu.eam.ingesoft.distribuidos.servidor.logica.Logica;
 
@@ -32,6 +33,10 @@ public class Servidor implements Runnable {
 			while (true) {
 				try {
 					System.out.println("esperando usuario..................");
+					UsuarioJpaController cone = new UsuarioJpaController();
+					cone.findUsuario(1);
+					
+					System.out.println("quien ");
 					Socket con = soc.accept();
 					HiloProcesarCliente cliente = new HiloProcesarCliente(con, this, logica);
 
