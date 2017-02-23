@@ -25,10 +25,8 @@ public class Logica {
 	public boolean verificarUsuario(LoginDTO usuario) {	
 		usu = con.findUsuario(usuario.getUsuario());
 		if(usu.getContrasenia().equals(usuario.getPass())){
-			System.out.println("ENTRO");
 			return true;
 		}else{
-			System.out.println("NO ENTRO");
 			return false;
 		}	
 	}
@@ -39,6 +37,10 @@ public class Logica {
 	 * @param regDTO
 	 */
 	public boolean crearUsuario(RegistroDTO regDTO) {
+		usu = new Usuario();
+		usu.setUsuario(regDTO.getUsuario());
+		usu.setContrasenia(regDTO.getPass());
+		con.create(usu);
 		return true;
 	}
 
