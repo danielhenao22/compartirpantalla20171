@@ -40,7 +40,7 @@ public class UsuarioJpaController implements Serializable {
         em.getTransaction().commit();
     }
 
-    public Usuario findUsuario(Integer id) {
+    public Usuario findUsuario(String id) {
         return em.find(Usuario.class, id);
     }
 

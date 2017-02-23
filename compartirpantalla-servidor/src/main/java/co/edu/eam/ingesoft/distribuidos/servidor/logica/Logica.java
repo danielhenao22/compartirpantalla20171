@@ -3,9 +3,16 @@ package co.edu.eam.ingesoft.distribuidos.servidor.logica;
 import co.edu.eam.dao.UsuarioJpaController;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.LoginDTO;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.RegistroDTO;
-import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.modelo.Usuario;
+import co.edu.eam.modelo.Usuario;
 
 public class Logica {
+	
+	UsuarioJpaController con;
+	Usuario usu;
+	
+	public Logica(){
+		con = new UsuarioJpaController();
+	}
 
 	// solo de ejemplo............
 
@@ -15,11 +22,15 @@ public class Logica {
 	 * @param usuario
 	 * @return true
 	 */
-	public boolean verificarUsuario(LoginDTO usuario) {
-		UsuarioJpaController con = new UsuarioJpaController();
-		con.findUsuario(1);
-		System.out.println("quien ");
-		return true;
+	public boolean verificarUsuario(LoginDTO usuario) {	
+		usu = con.findUsuario(usuario.getUsuario());
+		if(usu.getContrasenia().equals(usuario.getPass())){
+			System.out.println("ENTRO");
+			return true;
+		}else{
+			System.out.println("NO ENTRO");
+			return false;
+		}	
 	}
 
 	/**

@@ -14,21 +14,29 @@ public class Usuario implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	private Integer id;
+	private String usuario;
 
 	private String contrasenia;
 
-	private String nombre;
+	private String ip;
 
 	public Usuario() {
+	}	
+
+	public String getUsuario() {
+		return usuario;
 	}
 
-	public Integer getId() {
-		return this.id;
+	public void setUsuario(String usuario) {
+		this.usuario = usuario;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public String getIp() {
+		return ip;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
 	}
 
 	public String getContrasenia() {
@@ -39,12 +47,5 @@ public class Usuario implements Serializable {
 		this.contrasenia = contrasenia;
 	}
 
-	public String getNombre() {
-		return this.nombre;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
 
 }

@@ -32,11 +32,7 @@ public class Servidor implements Runnable {
 			pool = Executors.newFixedThreadPool(100);
 			while (true) {
 				try {
-					System.out.println("esperando usuario..................");
-					UsuarioJpaController cone = new UsuarioJpaController();
-					cone.findUsuario(1);
-					
-					System.out.println("quien ");
+					System.out.println("esperando usuario..................");					
 					Socket con = soc.accept();
 					HiloProcesarCliente cliente = new HiloProcesarCliente(con, this, logica);
 
