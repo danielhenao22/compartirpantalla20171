@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-
 import co.edu.eam.dao.UsuarioJpaController;
+import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.SolicitarConDTO;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.modelo.Usuario;
 import co.edu.eam.ingesoft.distribuidos.servidor.logica.Logica;
 
@@ -32,7 +32,7 @@ public class Servidor implements Runnable {
 			pool = Executors.newFixedThreadPool(100);
 			while (true) {
 				try {
-					System.out.println("esperando usuario..................");					
+					System.out.println("esperando usuario..................");
 					Socket con = soc.accept();
 					HiloProcesarCliente cliente = new HiloProcesarCliente(con, this, logica);
 
@@ -59,10 +59,26 @@ public class Servidor implements Runnable {
 	 */
 	public void enviarTodos(Object obj) throws IOException {
 		for (Map.Entry<String, HiloProcesarCliente> entry : clientesConectados.entrySet()) {
-			
+
 			HiloProcesarCliente cli = entry.getValue();
-			System.out.println("enviando a todos:"+cli.getUsuario().getUsuario());
+			System.out.println("enviando a todos:" + cli.getUsuario().getUsuario());
 			cli.enviarMsj(obj);
+		}
+	}
+
+	public void enviarA(Object obj) throws IOException {
+		SolicitarConDTO solicitar = (SolicitarConDTO) obj;
+		for (Map.Entry<String, HiloProcesarCliente> entry : clientesConectados.entrySet()) {			
+			HiloProcesarCliente cli = entry.getValue();
+			if(solicitar.getEstado()==1){
+				if(solicitar.getDestino().getUsuario().equals(cli.getUsuario().getUsuario())){
+					cli.enviarMsj(obj);
+				}
+			}if(solicitar.getEstado()==2){
+				if(solicitar.getOrigen().getUsuario().equals(cli.getUsuario().getUsuario())){
+					cli.enviarMsj(obj);
+				}
+			}			
 		}
 	}
 
@@ -102,8 +118,7 @@ public class Servidor implements Runnable {
 
 		clientesConectados.remove(cliente.getUsuario().getUsuario());
 	}
-	
-	
+
 	public static void main(String[] args) {
 		new Thread(new Servidor()).start();
 	}

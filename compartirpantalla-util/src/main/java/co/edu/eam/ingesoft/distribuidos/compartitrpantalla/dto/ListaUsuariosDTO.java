@@ -5,6 +5,8 @@ import java.util.List;
 
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.modelo.Usuario;
 
+
+
 /**
  * dto para el login
  * 

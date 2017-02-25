@@ -10,6 +10,7 @@ import java.util.List;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.ListaUsuariosDTO;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.LoginDTO;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.RegistroDTO;
+import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.SolicitarConDTO;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.modelo.Usuario;
 import co.edu.eam.ingesoft.distribuidos.servidor.logica.Logica;
 
@@ -100,8 +101,10 @@ public class HiloProcesarCliente implements Runnable {
 						if (logica.verificarUsuario(dto)) {
 
 							List<Usuario> usuarios = servidor.listarUsuarios();
-							
-							usuario = new Usuario(dto.getUsuario(), ip);
+
+							usuario = new Usuario();
+							usuario.setUsuario(dto.getUsuario());
+							usuario.setIp(ip);
 							usuarios.add(usuario);
 							enviarMsj(new ListaUsuariosDTO(usuarios));
 							servidor.enviarTodos(new ListaUsuariosDTO(usuarios));
@@ -110,6 +113,17 @@ public class HiloProcesarCliente implements Runnable {
 
 						} else {
 							enviarMsj("ERROR");
+						}
+					}
+
+					if (obj instanceof SolicitarConDTO) {
+						SolicitarConDTO solicitar = (SolicitarConDTO) obj;
+						//System.out.println(solicitar.getOrigen().getUsuario() + " - " + solicitar.getDestino().getUsuario());
+						if (solicitar.getEstado() == 2) {
+							servidor.enviarA(solicitar);
+						}else{
+							SolicitarConDTO solicitar2 = new SolicitarConDTO(solicitar.getOrigen(), solicitar.getDestino(), 1);
+							servidor.enviarA(solicitar2);
 						}
 					}
 

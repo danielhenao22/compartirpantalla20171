@@ -10,6 +10,8 @@ import java.util.Observer;
 
 import co.edu.eam.ingesoft.distribuidos.cliente.controlador.Controlador;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.ListaUsuariosDTO;
+import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.SolicitarConDTO;
+import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.modelo.Usuario;
 
 /**
  *
@@ -120,8 +122,13 @@ public class Ventana extends javax.swing.JFrame implements Observer {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnEnviartxtActionPerformed
 
-    private void btnCompartirPantallaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompartirPantallaActionPerformed
+    @SuppressWarnings("unused")
+	private void btnCompartirPantallaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompartirPantallaActionPerformed
         // TODO add your handling code here:
+    	Usuario usu = (Usuario) listaUsuarios.getSelectedValue();    	
+    	SolicitarConDTO solicitar = new SolicitarConDTO(null, usu, 0);
+    	control.solicitarCompartir(solicitar);
+    	
     }//GEN-LAST:event_btnCompartirPantallaActionPerformed
 
     /**
@@ -165,7 +172,7 @@ public class Ventana extends javax.swing.JFrame implements Observer {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JList listaUsuarios;
+    private javax.swing.JList<Object> listaUsuarios;
     private javax.swing.JTextArea taEnviar;
     private javax.swing.JTextArea taREcibidos;
     // End of variables declaration//GEN-END:variables

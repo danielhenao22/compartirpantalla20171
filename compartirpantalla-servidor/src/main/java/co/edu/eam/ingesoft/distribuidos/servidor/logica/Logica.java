@@ -3,7 +3,7 @@ package co.edu.eam.ingesoft.distribuidos.servidor.logica;
 import co.edu.eam.dao.UsuarioJpaController;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.LoginDTO;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.RegistroDTO;
-import co.edu.eam.modelo.Usuario;
+import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.modelo.Usuario;
 
 public class Logica {
 	
@@ -51,6 +51,8 @@ public class Logica {
 	 * @param usuario
 	 */
 	public void actualizarUsuario(String ip, String usuario) {
-
+		usu = con.findUsuario(usuario);	
+		usu.setIp(ip);
+		con.edit(usu);
 	}
 }

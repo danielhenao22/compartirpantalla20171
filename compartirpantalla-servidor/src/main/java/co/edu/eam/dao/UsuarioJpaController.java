@@ -5,9 +5,10 @@
  */
 package co.edu.eam.dao;
 
-import co.edu.eam.modelo.Usuario;
 import java.io.Serializable;
 import javax.persistence.EntityManager;
+
+import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.modelo.Usuario;
 
 /**
  *

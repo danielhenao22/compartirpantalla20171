@@ -1,75 +1,61 @@
 package co.edu.eam.ingesoft.distribuidos.compartitrpantalla.modelo;
 
 import java.io.Serializable;
+import javax.persistence.*;
+
 
 /**
- * usuario del sistema
- * @author caferrer
- *
+ * The persistent class for the usuario database table.
+ * 
  */
-public class Usuario implements Serializable{
+@Entity
+@NamedQuery(name="Usuario.findAll", query="SELECT u FROM Usuario u")
+public class Usuario implements Serializable {
+	private static final long serialVersionUID = 1L;
 
+	@Id
 	private String usuario;
-	private transient String pass;
+
+	private String contrasenia;
+
 	private String ip;
-	
-	
-	public Usuario(String usuario, String ip) {
-		super();
-		this.usuario = usuario;
-		this.ip = ip;
-	}
 
 	public Usuario() {
 	}
 	
-	/**
-	 * @return the usuario
-	 */
+
+	public Usuario(String usuario, String ip) {
+		this.usuario = usuario;
+		this.ip = ip;
+	}
+
 	public String getUsuario() {
 		return usuario;
 	}
-	/**
-	 * @param usuario the usuario to set
-	 */
+
 	public void setUsuario(String usuario) {
 		this.usuario = usuario;
 	}
-	/**
-	 * @return the pass
-	 */
-	public String getPass() {
-		return pass;
-	}
-	/**
-	 * @param pass the pass to set
-	 */
-	public void setPass(String pass) {
-		this.pass = pass;
-	}
-	/**
-	 * @return the ip
-	 */
+
 	public String getIp() {
 		return ip;
 	}
-	/**
-	 * @param ip the ip to set
-	 */
+
 	public void setIp(String ip) {
 		this.ip = ip;
 	}
-	
+
+	public String getContrasenia() {
+		return this.contrasenia;
+	}
+
+	public void setContrasenia(String contrasenia) {
+		this.contrasenia = contrasenia;
+	}
 	
 	@Override
 	public String toString() {
-		return usuario+"-"+ip;
+		return this.getUsuario()+": "+getIp();
 	}
-	
-	
-	
-	
-	
-	
-	
+
 }

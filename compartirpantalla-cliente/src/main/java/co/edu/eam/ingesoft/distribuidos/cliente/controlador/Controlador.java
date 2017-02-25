@@ -9,9 +9,12 @@ import java.net.Socket;
 import java.util.List;
 import java.util.Observable;
 
+import javax.swing.JOptionPane;
+
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.ListaUsuariosDTO;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.LoginDTO;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.RegistroDTO;
+import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.SolicitarConDTO;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.modelo.Usuario;
 
 /**
@@ -78,6 +81,17 @@ public class Controlador extends Observable implements Runnable {
 		return false;
 
 	}
+	
+	public void solicitarCompartir(Object obj){
+		SolicitarConDTO solicitar = (SolicitarConDTO) obj;
+		SolicitarConDTO solicitar2 = new SolicitarConDTO(this.usuario, solicitar.getDestino(), 1);
+		//System.out.println(solicitar2.getDestino().getUsuario()+" - "+solicitar2.getOrigen().getUsuario());
+		try {
+			enviarMsj(solicitar2);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
 
 	/**
 	 * metodo para loguearse al servidor
@@ -131,6 +145,18 @@ public class Controlador extends Observable implements Runnable {
 					System.out.println(usuario.getUsuario()+"::lista recibida:"+usuarios);
 					setChanged();
 					notifyObservers(lista);
+				}
+				
+				if(obj instanceof SolicitarConDTO){
+					SolicitarConDTO solicitar = (SolicitarConDTO) obj;
+					System.out.println("Entro a solicitar: "+solicitar.getEstado());
+					if(solicitar.getEstado()==1){
+						int respuesta = JOptionPane.showConfirmDialog(null, "¿Desea aceptar la solicitud de compartir?");
+						if(respuesta==0){
+							SolicitarConDTO solicitar2 = new SolicitarConDTO(solicitar.getOrigen(), solicitar.getDestino(), 2);
+							enviarMsj(solicitar2);
+						}
+					}
 				}
 
 			} catch (Exception e) {
