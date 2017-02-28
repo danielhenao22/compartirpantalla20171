@@ -120,10 +120,10 @@ public class HiloProcesarCliente implements Runnable {
 						SolicitarConDTO solicitar = (SolicitarConDTO) obj;
 						//System.out.println(solicitar.getOrigen().getUsuario() + " - " + solicitar.getDestino().getUsuario());
 						if (solicitar.getEstado() == 2) {
-							servidor.enviarA(solicitar);
+							servidor.enviarA(solicitar,solicitar.getOrigen().getUsuario());
 						}else{
 							SolicitarConDTO solicitar2 = new SolicitarConDTO(solicitar.getOrigen(), solicitar.getDestino(), 1);
-							servidor.enviarA(solicitar2);
+							servidor.enviarA(solicitar2,solicitar.getDestino().getUsuario());
 						}
 					}
 

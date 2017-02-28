@@ -11,6 +11,7 @@ import java.util.Observable;
 
 import javax.swing.JOptionPane;
 
+import co.edu.eam.ingesoft.distribuidos.cliente.gui.VentanaPantalla;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.ListaUsuariosDTO;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.LoginDTO;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.RegistroDTO;
@@ -24,10 +25,13 @@ import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.modelo.Usuario;
  *
  */
 public class Controlador extends Observable implements Runnable {
-	
+
 	private Socket con;
 	private ObjectOutputStream salida;
 	private ObjectInputStream entrada;
+	private HiloDestino hDestino;
+	private Socket con2;
+	
 
 	private List<Usuario> usuarios;
 	/**
@@ -53,12 +57,12 @@ public class Controlador extends Observable implements Runnable {
 			login.setPass(pass);
 			login.setUsuario(user);
 			enviarMsj(login);
-			usuario=new Usuario(user, InetAddress.getLocalHost().getHostAddress());
+			usuario = new Usuario(user, InetAddress.getLocalHost().getHostAddress());
 
 			Object resp = entrada.readObject();
 			if (resp instanceof ListaUsuariosDTO) {
 				ListaUsuariosDTO lista = (ListaUsuariosDTO) resp;
-				usuarios=lista.getUsuarios();
+				usuarios = lista.getUsuarios();
 				setChanged();
 				notifyObservers(lista);
 				// -----------------corriendo el hhilo para que empiece a
@@ -81,16 +85,14 @@ public class Controlador extends Observable implements Runnable {
 		return false;
 
 	}
-	
-	public void solicitarCompartir(Object obj){
+
+	public void solicitarCompartir(Object obj) throws IOException {
 		SolicitarConDTO solicitar = (SolicitarConDTO) obj;
 		SolicitarConDTO solicitar2 = new SolicitarConDTO(this.usuario, solicitar.getDestino(), 1);
-		//System.out.println(solicitar2.getDestino().getUsuario()+" - "+solicitar2.getOrigen().getUsuario());
-		try {
-			enviarMsj(solicitar2);
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
+		// System.out.println(solicitar2.getDestino().getUsuario()+" -
+		// "+solicitar2.getOrigen().getUsuario());
+		enviarMsj(solicitar2);
+
 	}
 
 	/**
@@ -142,21 +144,38 @@ public class Controlador extends Observable implements Runnable {
 					System.out.println("lista recibida:");
 					ListaUsuariosDTO lista = (ListaUsuariosDTO) obj;
 					usuarios = lista.getUsuarios();
-					System.out.println(usuario.getUsuario()+"::lista recibida:"+usuarios);
+					System.out.println(usuario.getUsuario() + "::lista recibida:" + usuarios);
 					setChanged();
 					notifyObservers(lista);
 				}
-				
-				if(obj instanceof SolicitarConDTO){
+
+				if (obj instanceof SolicitarConDTO) {
 					SolicitarConDTO solicitar = (SolicitarConDTO) obj;
-					System.out.println("Entro a solicitar: "+solicitar.getEstado());
-					if(solicitar.getEstado()==1){
-						int respuesta = JOptionPane.showConfirmDialog(null, "¿Desea aceptar la solicitud de compartir?");
-						if(respuesta==0){
-							SolicitarConDTO solicitar2 = new SolicitarConDTO(solicitar.getOrigen(), solicitar.getDestino(), 2);
+					System.out.println("Entro a solicitar: " + solicitar.getEstado());
+					if (solicitar.getEstado() == 1) {
+						int respuesta = JOptionPane.showConfirmDialog(null,
+								"¿Desea aceptar la solicitud de compartir?");
+						if (respuesta == 0) {
+							hDestino = new HiloDestino();
+							new Thread(hDestino).start();
+							SolicitarConDTO solicitar2 = new SolicitarConDTO(solicitar.getOrigen(),
+									solicitar.getDestino(), 2);
+							
 							enviarMsj(solicitar2);
+							VentanaPantalla pantalla = new VentanaPantalla(hDestino);
+							hDestino.addObserver(pantalla);
+							pantalla.setVisible(true);
 						}
 					}
+
+					if (solicitar.getEstado() == 2) {
+						Socket con2 = new Socket("localhost", 45001);
+						//HiloDestino hiloDestino = new HiloDestino(con2);
+						JOptionPane.showMessageDialog(null, "Conexion aceptada");
+						HiloOrigen hiloOrigen = new HiloOrigen(con2);
+						new Thread(hiloOrigen).start();
+					}
+
 				}
 
 			} catch (Exception e) {
@@ -182,7 +201,7 @@ public class Controlador extends Observable implements Runnable {
 	public List<Usuario> getUsuarios() {
 		return usuarios;
 	}
-	
+
 	public Usuario getUsuario() {
 		return usuario;
 	}

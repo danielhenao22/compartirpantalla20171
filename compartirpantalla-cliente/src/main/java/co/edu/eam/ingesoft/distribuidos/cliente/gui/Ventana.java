@@ -5,6 +5,7 @@
  */
 package co.edu.eam.ingesoft.distribuidos.cliente.gui;
 
+import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -65,7 +66,12 @@ public class Ventana extends javax.swing.JFrame implements Observer {
         btnCompartirPantalla.setText("compartir pantalla");
         btnCompartirPantalla.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCompartirPantallaActionPerformed(evt);
+                try {
+					btnCompartirPantallaActionPerformed(evt);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
         });
 
@@ -123,7 +129,7 @@ public class Ventana extends javax.swing.JFrame implements Observer {
     }//GEN-LAST:event_btnEnviartxtActionPerformed
 
     @SuppressWarnings("unused")
-	private void btnCompartirPantallaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompartirPantallaActionPerformed
+	private void btnCompartirPantallaActionPerformed(java.awt.event.ActionEvent evt) throws IOException {//GEN-FIRST:event_btnCompartirPantallaActionPerformed
         // TODO add your handling code here:
     	Usuario usu = (Usuario) listaUsuarios.getSelectedValue();    	
     	SolicitarConDTO solicitar = new SolicitarConDTO(null, usu, 0);

@@ -66,20 +66,8 @@ public class Servidor implements Runnable {
 		}
 	}
 
-	public void enviarA(Object obj) throws IOException {
-		SolicitarConDTO solicitar = (SolicitarConDTO) obj;
-		for (Map.Entry<String, HiloProcesarCliente> entry : clientesConectados.entrySet()) {			
-			HiloProcesarCliente cli = entry.getValue();
-			if(solicitar.getEstado()==1){
-				if(solicitar.getDestino().getUsuario().equals(cli.getUsuario().getUsuario())){
-					cli.enviarMsj(obj);
-				}
-			}if(solicitar.getEstado()==2){
-				if(solicitar.getOrigen().getUsuario().equals(cli.getUsuario().getUsuario())){
-					cli.enviarMsj(obj);
-				}
-			}			
-		}
+	public void enviarA(Object obj, String destino) throws IOException {
+		clientesConectados.get(destino).enviarMsj(obj);
 	}
 
 	/**
