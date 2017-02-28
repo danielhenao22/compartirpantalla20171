@@ -10,6 +10,7 @@ import java.util.List;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.ListaUsuariosDTO;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.LoginDTO;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.RegistroDTO;
+import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.SolicitarCamaraDTO;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.SolicitarConDTO;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.modelo.Usuario;
 import co.edu.eam.ingesoft.distribuidos.servidor.logica.Logica;
@@ -123,6 +124,16 @@ public class HiloProcesarCliente implements Runnable {
 							servidor.enviarA(solicitar,solicitar.getOrigen().getUsuario());
 						}else{
 							SolicitarConDTO solicitar2 = new SolicitarConDTO(solicitar.getOrigen(), solicitar.getDestino(), 1);
+							servidor.enviarA(solicitar2,solicitar.getDestino().getUsuario());
+						}
+					}
+					
+					if (obj instanceof SolicitarCamaraDTO) {
+						SolicitarCamaraDTO solicitar = (SolicitarCamaraDTO) obj;
+						if (solicitar.getEstado() == 2) {
+							servidor.enviarA(solicitar,solicitar.getOrigen().getUsuario());
+						}else{
+							SolicitarCamaraDTO solicitar2 = new SolicitarCamaraDTO(solicitar.getOrigen(), solicitar.getDestino(), 1);
 							servidor.enviarA(solicitar2,solicitar.getDestino().getUsuario());
 						}
 					}

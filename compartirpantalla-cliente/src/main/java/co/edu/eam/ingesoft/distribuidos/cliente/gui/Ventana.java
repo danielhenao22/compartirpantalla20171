@@ -9,8 +9,11 @@ import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.JOptionPane;
+
 import co.edu.eam.ingesoft.distribuidos.cliente.controlador.Controlador;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.ListaUsuariosDTO;
+import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.SolicitarCamaraDTO;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.SolicitarConDTO;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.modelo.Usuario;
 
@@ -131,9 +134,17 @@ public class Ventana extends javax.swing.JFrame implements Observer {
     @SuppressWarnings("unused")
 	private void btnCompartirPantallaActionPerformed(java.awt.event.ActionEvent evt) throws IOException {//GEN-FIRST:event_btnCompartirPantallaActionPerformed
         // TODO add your handling code here:
-    	Usuario usu = (Usuario) listaUsuarios.getSelectedValue();    	
-    	SolicitarConDTO solicitar = new SolicitarConDTO(null, usu, 0);
-    	control.solicitarCompartir(solicitar);
+    	int num = JOptionPane.showConfirmDialog(null, "¿Compartir o Videollamada?");
+    	if(num==0){
+    		Usuario usu = (Usuario) listaUsuarios.getSelectedValue();    	
+        	SolicitarConDTO solicitar = new SolicitarConDTO(null, usu, 0);
+        	control.solicitarCompartir(solicitar);
+    	}else if(num==1){
+    		Usuario usu = (Usuario) listaUsuarios.getSelectedValue(); 
+    		SolicitarCamaraDTO solicitar = new SolicitarCamaraDTO(null,usu,0);
+    		control.solicitarCompartirVideollamada(solicitar);
+    	}
+    	
     	
     }//GEN-LAST:event_btnCompartirPantallaActionPerformed
 

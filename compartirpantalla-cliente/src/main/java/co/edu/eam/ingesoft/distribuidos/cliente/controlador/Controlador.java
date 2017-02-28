@@ -3,18 +3,18 @@ package co.edu.eam.ingesoft.distribuidos.cliente.controlador;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.Inet4Address;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.List;
 import java.util.Observable;
-
 import javax.swing.JOptionPane;
-
 import co.edu.eam.ingesoft.distribuidos.cliente.gui.VentanaPantalla;
+import co.edu.eam.ingesoft.distribuidos.cliente.gui.VentanaVideoLlamada;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.ListaUsuariosDTO;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.LoginDTO;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.RegistroDTO;
+import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.SolicitarCamaraDTO;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.dto.SolicitarConDTO;
 import co.edu.eam.ingesoft.distribuidos.compartitrpantalla.modelo.Usuario;
 
@@ -30,14 +30,13 @@ public class Controlador extends Observable implements Runnable {
 	private ObjectOutputStream salida;
 	private ObjectInputStream entrada;
 	private HiloDestino hDestino;
-	private Socket con2;
-	
 
 	private List<Usuario> usuarios;
 	/**
 	 * mi usuario
 	 */
 	private Usuario usuario;
+	private EntradaVideo entradaVideo;
 
 	/**
 	 * metodo para loguearse al servidor
@@ -65,10 +64,7 @@ public class Controlador extends Observable implements Runnable {
 				usuarios = lista.getUsuarios();
 				setChanged();
 				notifyObservers(lista);
-				// -----------------corriendo el hhilo para que empiece a
-				// recibir mensajes...........................
 				new Thread(this).start();
-				// --------------------------------------------------------------------------------------------------
 				return true;
 			}
 
@@ -89,8 +85,13 @@ public class Controlador extends Observable implements Runnable {
 	public void solicitarCompartir(Object obj) throws IOException {
 		SolicitarConDTO solicitar = (SolicitarConDTO) obj;
 		SolicitarConDTO solicitar2 = new SolicitarConDTO(this.usuario, solicitar.getDestino(), 1);
-		// System.out.println(solicitar2.getDestino().getUsuario()+" -
-		// "+solicitar2.getOrigen().getUsuario());
+		enviarMsj(solicitar2);
+
+	}
+	
+	public void solicitarCompartirVideollamada(Object obj) throws IOException {
+		SolicitarCamaraDTO solicitar = (SolicitarCamaraDTO) obj;
+		SolicitarCamaraDTO solicitar2 = new SolicitarCamaraDTO(this.usuario, solicitar.getDestino(), 1);
 		enviarMsj(solicitar2);
 
 	}
@@ -151,7 +152,6 @@ public class Controlador extends Observable implements Runnable {
 
 				if (obj instanceof SolicitarConDTO) {
 					SolicitarConDTO solicitar = (SolicitarConDTO) obj;
-					System.out.println("Entro a solicitar: " + solicitar.getEstado());
 					if (solicitar.getEstado() == 1) {
 						int respuesta = JOptionPane.showConfirmDialog(null,
 								"¿Desea aceptar la solicitud de compartir?");
@@ -160,7 +160,7 @@ public class Controlador extends Observable implements Runnable {
 							new Thread(hDestino).start();
 							SolicitarConDTO solicitar2 = new SolicitarConDTO(solicitar.getOrigen(),
 									solicitar.getDestino(), 2);
-							
+
 							enviarMsj(solicitar2);
 							VentanaPantalla pantalla = new VentanaPantalla(hDestino);
 							hDestino.addObserver(pantalla);
@@ -170,10 +170,37 @@ public class Controlador extends Observable implements Runnable {
 
 					if (solicitar.getEstado() == 2) {
 						Socket con2 = new Socket("localhost", 45001);
-						//HiloDestino hiloDestino = new HiloDestino(con2);
+						// HiloDestino hiloDestino = new HiloDestino(con2);
 						JOptionPane.showMessageDialog(null, "Conexion aceptada");
 						HiloOrigen hiloOrigen = new HiloOrigen(con2);
 						new Thread(hiloOrigen).start();
+					}
+
+				}
+
+				if (obj instanceof SolicitarCamaraDTO) {
+					SolicitarCamaraDTO solicitar = (SolicitarCamaraDTO) obj;
+					System.out.println("Camara Estado: " + solicitar.getEstado());
+					if (solicitar.getEstado() == 1) {
+						int respuesta = JOptionPane.showConfirmDialog(null,
+								"¿Desea aceptar la solicitud de Videollamada?");
+						if (respuesta == 0) {
+							entradaVideo = new EntradaVideo();
+							new Thread(entradaVideo).start();
+							SolicitarCamaraDTO solicitar2 = new SolicitarCamaraDTO(solicitar.getOrigen(),
+									solicitar.getDestino(), 2);
+							enviarMsj(solicitar2);
+							VentanaVideoLlamada pantalla = new VentanaVideoLlamada(entradaVideo);
+							entradaVideo.addObserver(pantalla);
+							pantalla.setVisible(true);
+						}
+					}
+
+					if (solicitar.getEstado() == 2) {
+						DatagramSocket sock = new DatagramSocket();
+						JOptionPane.showMessageDialog(null, "Videollamada aceptada");
+						SalidaVideo salida = new SalidaVideo(sock);
+						new Thread(salida).start();
 					}
 
 				}

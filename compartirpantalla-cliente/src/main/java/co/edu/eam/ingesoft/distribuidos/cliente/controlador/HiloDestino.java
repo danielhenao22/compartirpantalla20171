@@ -14,8 +14,7 @@ public class HiloDestino extends Observable implements Runnable {
 		this.con = con;
 	}
 	
-	public HiloDestino(){
-		
+	public HiloDestino(){		
 	}
 
 	public void run() {

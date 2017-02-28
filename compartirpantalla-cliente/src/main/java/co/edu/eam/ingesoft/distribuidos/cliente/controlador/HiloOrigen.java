@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Iterator;
-
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
@@ -21,7 +20,6 @@ import javax.imageio.stream.MemoryCacheImageOutputStream;
 public class HiloOrigen implements Runnable {
 
 	private ObjectOutputStream salida;
-	private ByteArrayOutputStream imgSalida;
 	private Socket soc;
 
 	public HiloOrigen(Socket con) {
